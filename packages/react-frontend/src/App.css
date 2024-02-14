@@ -1,5 +1,36 @@
 .App {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100vh;
+  margin-top: 0px;
+}
+
+.week-chart-container {
+  margin-top: 40px;
+  margin-right: 250px;
+}
+
+.week-chart {
+  border-collapse: collapse;
+  width: 95%;
+}
+
+.day-header,
+.day-column {
+  box-sizing: border-box;
+  border: 1px solid #000000;
   text-align: center;
+  width: 130px;
+  padding: 20px;
+}
+
+.day-header {
+  height: 30px;
+}
+
+.day-column {
+  height: 400px;
 }
 
 .App-logo {
