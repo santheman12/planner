@@ -19,6 +19,7 @@ function findUserById(id) {
 function getUsers(name) {
     let promise;
     if (name === undefined) {
+      console.log("akjshjdfkjasodfjokqjwf")
       promise = userModel.find();
     } else {
       promise = findUserByName(name);
@@ -43,5 +44,7 @@ function addUser(user) {
 export default {
   getUsers,
   findUserById,
+  deleteUser,
+  addUser
 };
 
