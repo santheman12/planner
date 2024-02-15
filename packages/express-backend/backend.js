@@ -15,7 +15,6 @@ app.get("/", (req, res) => {
 
 app.get("/users", (req, res) => {
   const name = req.params["name"];
-
   userServices.getUsers(name)
   .then( result => {
     if (result.length > 0) {

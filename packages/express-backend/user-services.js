@@ -19,12 +19,11 @@ function findUserById(id) {
 function getUsers(name) {
     let promise;
     if (name === undefined) {
-      console.log("akjshjdfkjasodfjokqjwf")
       promise = userModel.find();
     } else {
       promise = findUserByName(name);
-    return promise;
     }
+    return promise;
 }
 
 function findUserByName(name) {
