@@ -6,14 +6,19 @@
   margin-top: 0px;
 }
 
-.week-chart-container {
+.chart-container {
+  display: flex;
   margin-top: 40px;
-  margin-right: 250px;
+}
+
+.week-chart-container {
+  flex: 1; /* Use flex property to distribute available space */
+  margin-right: 10px; /* Adjust the margin as needed */
 }
 
 .week-chart {
   border-collapse: collapse;
-  width: 95%;
+  width: 100%; /* Adjust the width as needed */
 }
 
 .day-header,
@@ -21,15 +26,32 @@
   box-sizing: border-box;
   border: 1px solid #000000;
   text-align: center;
-  width: 130px;
+  width: 100%; /* Adjust the width as needed */
   padding: 20px;
 }
 
-.day-header {
+.day-column {
+  height: 400px;
+}
+
+.overdue-chart {
+  border-collapse: collapse;
+  width: 100%; /* Adjust the width as needed */
+}
+
+.overdue-header,
+.overdue-column {
+  box-sizing: border-box;
+  border: 1px solid #000000;
+  text-align: center;
+  padding: 20px;
+}
+
+.overdue-header {
   height: 30px;
 }
 
-.day-column {
+.overdue-column {
   height: 400px;
 }
 
