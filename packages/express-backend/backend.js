@@ -2,6 +2,7 @@
 import express from "express";
 import cors from "cors";
 import userServices from "./user-services.js"
+import taskServices from "./task-services.js";
 
 const app = express();
 const port = 8000;
@@ -22,10 +23,25 @@ app.get("/users", (req, res) => {
       } else {
         res.status(404).send("Resources not found.");
       }
-  }).catch( err => {
+  }).catch( err => { 
     res.status(500).send("Internal Server Error.")
   })
 });
+
+app.get("/tasks", (req, res) => {
+  const id = req.params["userid"];
+  taskServices.getTask(id)
+  .then( result => {
+    if (result.length > 0) {
+        res.status(200).send({ task: result });
+      } else {
+        res.status(404).send("Resources not found.");
+      }
+  }).catch( err => { 
+    res.status(500).send("Internal Server Error.")
+  })
+});
+
 
 app.post("/users", (req, res) => {
   const userToAdd = req.body;
@@ -33,6 +49,20 @@ app.post("/users", (req, res) => {
   .then( result => {
     if (result.length > 0) {
       res.status(201).send(userToAdd);
+    } else {
+      res.status(404).send("Resources not found.");
+    }
+  }).catch( err => {
+    res.status(500).send("Internal Server Error.")
+  })
+});
+
+app.post("/tasks", (req, res) => {
+  const taskToAdd = req.body;
+  taskServices.addTask(taskToAdd)
+  .then( result => {
+    if (result) {
+      res.status(201).send(taskToAdd);
     } else {
       res.status(404).send("Resources not found.");
     }
