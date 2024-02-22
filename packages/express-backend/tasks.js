@@ -3,9 +3,10 @@ import mongoose from "mongoose";
 const TaskSchema = new mongoose.Schema(
   {
     userid: {
-      type: mongoose.Schema.Types.ObjectId,
+      //type: mongoose.Schema.Types.ObjectId,
+      type: String,
       required: true,
-      ref: 'User Id'
+      // ref: 'User Id'
     },
     task_name: {
       type: String,
