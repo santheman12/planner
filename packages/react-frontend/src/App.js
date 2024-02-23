@@ -9,7 +9,7 @@ function App() {
       <div className="App-body">
         <div className="chart-container">
           <WeekChart />
-          <Overdue />
+          {/* <Overdue /> */}
         </div>
       </div>
     </div>
