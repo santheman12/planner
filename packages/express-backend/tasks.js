@@ -3,10 +3,9 @@ import mongoose from "mongoose";
 const TaskSchema = new mongoose.Schema(
   {
     userid: {
-      //type: mongoose.Schema.Types.ObjectId,
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'users_list',   // Reference to the 'User' collection
       required: true,
-      // ref: 'User Id'
     },
     task_name: {
       type: String,
@@ -14,15 +13,16 @@ const TaskSchema = new mongoose.Schema(
       trim: true,
     },
     task_due_date: {
-      type: String,
+      type: Date,
       required: true,
       trim: true,
-      validate(value) {
-        const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-        if (!days.includes(value)) {
-          throw new Error("Invalid day, must be a day of the week.");
-        }
-      },
+      validate: {
+        validator: function(value) {
+          // Check if the due date is in the future
+          return value instanceof Date && value > new Date();
+        },
+        message: props => `${props.value} is not a future date for the task due date!`
+      }
     },
     task_description: {
       type: String,
@@ -34,6 +34,10 @@ const TaskSchema = new mongoose.Schema(
       required: false, // Assuming not required, adjust as necessary
       trim: true,
     }],
+    // task_tags: [{
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: 'Tag', // Reference to the 'Tag' collection
+    // }],
     task_completed: {
       type: Boolean,
       required: true,
