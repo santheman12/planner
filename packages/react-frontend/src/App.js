@@ -27,7 +27,7 @@ function App() {
 
   return (
     <div className="App">
-      <div className="App-body">
+      <div className="App-body mt-10">
         {!authenticated ? (
           isLoginMode ? (
             <Login onLogin={handleLogin} onSwitchToRegister={switchToRegister} />
