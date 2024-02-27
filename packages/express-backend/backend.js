@@ -42,6 +42,20 @@ app.get("/tasks", (req, res) => {
   })
 });
 
+app.get("/tasks/week", (req, res) => {
+  const current_date = req.params["current_date"];
+  taskServices.getWeekTasks(current_date)
+  .then( result => {
+    if (result.length > 0) {
+        res.status(200).send({ task: result });
+      } else {
+        res.status(404).send("Resources not found.");
+      }
+  }).catch( err => { 
+    res.status(500).send("Internal Server Error.")
+  })
+});
+
 
 app.post("/users", (req, res) => {
   const userToAdd = req.body;
