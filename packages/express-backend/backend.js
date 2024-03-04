@@ -44,11 +44,11 @@ app.get("/tasks", (req, res) => {
 
 app.get("/tasks/week", (req, res) => {
   const userid = req.query.userid;
-  const current_date = req.params["current_date"];
+  const current_date = req.query.current_date;
   taskServices.getWeekTasks(userid, current_date)
   .then( result => {
     if (result.length > 0) {
-        res.status(200).send({ task: result });
+        res.status(200).send(result);
       } else {
         res.status(404).send("Resources not found.");
       }
