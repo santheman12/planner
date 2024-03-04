@@ -21,7 +21,7 @@ function getTask(id) {
     return promise;
 }
 
-function getWeekTasks(currentDate){
+function getWeekTasks(userId, currentDate){
       if (currentDate !== undefined && !(currentDate instanceof Date) || isNaN(currentDate)) {
         throw new Error("Invalid currentDate. Please provide a valid Date object.");
     }
@@ -40,6 +40,7 @@ function getWeekTasks(currentDate){
     const pipeline = [
         {
             $match: {
+                userid: mongoose.Types.ObjectId(userId),
                 task_due_date: {
                     $gte: startOfWeek,
                     $lt: endOfWeek
