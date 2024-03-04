@@ -62,8 +62,8 @@ app.post("/users", (req, res) => {
   const userToAdd = req.body;
   userServices.addUser(userToAdd)
   .then( result => {
-    if (result.length > 0) {
-      res.status(201).send(userToAdd);
+    if (result) {
+      res.status(201).send(result);
     } else {
       res.status(404).send("Resources not found.");
     }
