@@ -28,9 +28,9 @@ app.get("/users", (req, res) => {
   })
 });
 
-app.get("/tasks", (req, res) => {
-  const id = req.params["userid"];
-  taskServices.getTask(id)
+app.get("/tasks", (req, res) => { 
+  const userid = req.query.userid;
+  taskServices.getTask(userid)
   .then( result => {
     if (result.length > 0) {
         res.status(200).send({ task: result });
@@ -43,8 +43,9 @@ app.get("/tasks", (req, res) => {
 });
 
 app.get("/tasks/week", (req, res) => {
+  const userid = req.query.userid;
   const current_date = req.params["current_date"];
-  taskServices.getWeekTasks(current_date)
+  taskServices.getWeekTasks(userid, current_date)
   .then( result => {
     if (result.length > 0) {
         res.status(200).send({ task: result });
