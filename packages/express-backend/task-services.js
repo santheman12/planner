@@ -22,6 +22,8 @@ function getTask(id) {
 }
 
 function getWeekTasks(userId, currentDate){
+    currentDate = new Date(currentDate);
+    
       if (currentDate !== undefined && !(currentDate instanceof Date) || isNaN(currentDate)) {
         throw new Error("Invalid currentDate. Please provide a valid Date object.");
     }
@@ -30,7 +32,10 @@ function getWeekTasks(userId, currentDate){
 
     // Calculate the first Sunday from the current day
     const startOfWeek = new Date(currentDate);
-    startOfWeek.setDate(currentDate.getDate() - currentDate.getDay()); // Set to the first day of the week (Sunday)
+    console.log(startOfWeek)
+    console.log(startOfWeek.getUTCDay())
+   // console.log(startOfWeek.getDay())
+    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getUTCDay()); // Set to the first day of the week (Sunday)
 
     // Calculate the end of the week (7 days later)
     const endOfWeek = new Date(startOfWeek);
@@ -40,13 +45,19 @@ function getWeekTasks(userId, currentDate){
     const pipeline = [
         {
             $match: {
-                userid: mongoose.Types.ObjectId(userId),
+                userid: new mongoose.Types.ObjectId(userId),
                 task_due_date: {
                     $gte: startOfWeek,
                     $lt: endOfWeek
                 }
             }
-        }
+        },
+        {
+          $group: {
+              _id: { $dayOfWeek: { date: "$task_due_date", timezone: "UTC" } },
+              tasks: { $push: "$$ROOT" } // push documents into an array for each day
+          }
+      }
     ];
 
     promise = taskModel.aggregate(pipeline);
