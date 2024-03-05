@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 interface AddExperienceModalProps {
     isOpen: boolean;
@@ -9,11 +9,71 @@ const AddExperienceModal: React.FC<AddExperienceModalProps> = ({
     isOpen,
     setShowModal,
 }) => {
+    const [task, setTask] = useState({
+        userid: "",
+        task_name: "",
+        task_due_date: "",
+        task_description: "",
+        task_tags: [],
+        task_completed: false,
+    });
+
     if (!isOpen) return null;
 
-    // const handleModalState = (e: boolean) => {
-    //     setShowModal(e);
-    // };
+    function handleChange(event) {
+        const { name, value, type, checked } = event.target;
+        setTask((prevTask) => ({
+            ...prevTask,
+            [name]: type === "checkbox" ? checked : value,
+        }));
+    }
+
+    async function submitForm(event) {
+        event.preventDefault(); // Prevent the default form submission behavior
+
+        try {
+            console.log(task)
+            // Assuming your backend expects task details in JSON format
+            const response = await fetch(`http://localhost:8000/tasks`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    ...task,
+                    task_tags: task.task_tags
+                        .split(",")
+                        .map((tag) => tag.trim()), // Assuming task_tags is a string of comma-separated values
+                }),
+            });
+
+            if (response.ok) {
+                // Task successfully added to the backend and, consequently, MongoDB Atlas
+                alert("Task added successfully!");
+                setTask({
+                    userid: "",
+                    task_name: "",
+                    task_due_date: "",
+                    task_description: "",
+                    task_tags: [],
+                    task_completed: false,
+                }); // Reset form
+            } else {
+                const errorText = await response.text(); // Or .json() if your backend sends a JSON response
+                console.error(
+                    "Failed to add task. Status:",
+                    response.status,
+                    "Response:",
+                    errorText
+                );
+                // Handle server errors (e.g., invalid input or server issues)
+                alert("Failed to add task.");
+            }
+        } catch (error) {
+            console.error("Error adding task:", error);
+            alert("An error occurred while adding the task.");
+        }
+    }
     return (
         <>
             <div
@@ -39,25 +99,78 @@ const AddExperienceModal: React.FC<AddExperienceModalProps> = ({
                         </div>
                         {/* Body */}
                         <div className="relative flex-auto">
-                            <form className="px-12 py-8">
+                            <form className="px-12 py-8" onSubmit={submitForm}>
                                 <div className="grid gap-7 gap-x-12 mb-4 grid-cols-2">
-                                    <div className="col-span-2">
+                                    <div className="col-span-2 space-y-4">
                                         <label
-                                            htmlFor="name"
+                                            htmlFor="task_name"
                                             className="block mb-2 text-sm font-medium text-gray-900"
                                         >
                                             Task Name
                                         </label>
                                         <input
                                             type="text"
-                                            name="name"
-                                            id="name"
+                                            name="task_name"
+                                            value={task.task_name}
+                                            onChange={handleChange}
+                                            id="task_name"
                                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                             placeholder="Type task name"
                                             required
                                         />
+                                        <label
+                                            htmlFor="userid"
+                                            className="block mb-2 text-sm font-medium text-gray-900"
+                                        >
+                                            User Id
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="userid"
+                                            value={task.userid}
+                                            onChange={handleChange}
+                                            id="userid"
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                            placeholder="Type userid"
+                                            required
+                                        />
+                                        <label
+                                            htmlFor="tag"
+                                            className="block mb-2 text-sm font-medium text-gray-900"
+                                        >
+                                            Due Date
+                                        </label>
+                                        <select
+                                            name="task_due_date"
+                                            value={task.task_due_date}
+                                            onChange={handleChange}
+                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                        >
+                                            <option value="">Select Day</option>
+                                            <option value="Monday">
+                                                Monday
+                                            </option>
+                                            <option value="Tuesday">
+                                                Tuesday
+                                            </option>
+                                            <option value="Wednesday">
+                                                Wednesday
+                                            </option>
+                                            <option value="Thursday">
+                                                Thursday
+                                            </option>
+                                            <option value="Friday">
+                                                Friday
+                                            </option>
+                                            <option value="Saturday">
+                                                Saturday
+                                            </option>
+                                            <option value="Sunday">
+                                                Sunday
+                                            </option>
+                                        </select>
                                     </div>
-                                    <div className="col-span-2 sm:col-span-1">
+                                    {/* <div className="col-span-2 sm:col-span-1">
                                         <label
                                             htmlFor="priority"
                                             className="block mb-2 text-sm font-medium text-gray-900"
@@ -78,24 +191,22 @@ const AddExperienceModal: React.FC<AddExperienceModalProps> = ({
                                             <option value="high">High</option>
                                             <option value="top">Top</option>
                                         </select>
-                                    </div>
+                                    </div> */}
                                     <div className="col-span-2 sm:col-span-1">
                                         <label
-                                            htmlFor="tag"
+                                            htmlFor="description"
                                             className="block mb-2 text-sm font-medium text-gray-900"
                                         >
-                                            Tag
+                                            Task Tags
                                         </label>
-                                        <select
-                                            id="tag"
-                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                        >
-                                            <option value="">Select tag</option>
-                                            <option value="tag1">Tag 1</option>
-                                            <option value="tag2">Tag 2</option>
-                                            <option value="tag3">Tag 3</option>
-                                            <option value="tag4">Tag 4</option>
-                                        </select>
+                                        <input
+                                            type="text"
+                                            name="task_tags"
+                                            value={task.task_tags}
+                                            onChange={handleChange}
+                                            placeholder="Task Tags (comma-separated)"
+                                            className="lock p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                                        />
                                     </div>
                                     <div className="col-span-2">
                                         <label
@@ -107,6 +218,9 @@ const AddExperienceModal: React.FC<AddExperienceModalProps> = ({
                                         <textarea
                                             id="description"
                                             rows={4}
+                                            value={task.task_description}
+                                            onChange={handleChange}
+                                            name="task_description"
                                             className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                                             placeholder="Describe the task"
                                         ></textarea>
