@@ -19,7 +19,7 @@ const TaskSchema = new mongoose.Schema(
       validate: {
         validator: function(value) {
           // Check if the due date is in the future
-          return value instanceof Date && value > new Date();
+          return value instanceof Date;
         },
         message: props => `${props.value} is not a future date for the task due date!`
       }
