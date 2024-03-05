@@ -38,7 +38,7 @@ const TaskCard = ({
                 })+ ' @ ' + new Date(task_due_date).toLocaleTimeString("en-US", {
                   hour: '2-digit',
                   minute: '2-digit',
-                  hour12: true // Use false for 24-hour format
+                  hour12: true
                 })}
             </p>
 

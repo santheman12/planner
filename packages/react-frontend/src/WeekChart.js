@@ -25,6 +25,15 @@ const WeekChart = () => {
             tasks: [
                 {
                     _id: "task2",
+                    task_name: "Workout",
+                    task_description:
+                        "Leg Day!",
+                    task_due_date: "2024-03-06T12:00:00.000Z",
+                    task_tags: ["health"],
+                    task_completed: false,
+                },
+                {
+                    _id: "task2b",
                     task_name: "Team meeting",
                     task_description: "Discuss new features, retrospective",
                     task_due_date: "2024-03-07T10:00:00.000Z",
@@ -32,19 +41,11 @@ const WeekChart = () => {
                     task_completed: false,
                 },
                 {
-                    _id: "task2b",
+                    _id: "task2c",
                     task_name: "Team meeting 2",
                     task_description: "Discuss new features, retrospective",
                     task_due_date: "2024-03-07T10:00:00.000Z",
                     task_tags: ["work", "urgent"],
-                    task_completed: false,
-                },
-                {
-                    _id: "task2c",
-                    task_name: "Team meeting 3",
-                    task_description: "Discuss new features, retrospective",
-                    task_due_date: "2024-03-07T10:00:00.000Z",
-                    task_tags: ["work"],
                     task_completed: false,
                 },
             ],
@@ -53,17 +54,9 @@ const WeekChart = () => {
         {
             id: 5,
             tasks: [
+                
                 {
                     _id: "task3",
-                    task_name: "Grocery shopping at target",
-                    task_description:
-                        "Milk, eggs, water, bread, rice, chicken, onion, apples, banana",
-                    task_due_date: "2024-03-09T12:00:00.000Z",
-                    task_tags: ["errands"],
-                    task_completed: false,
-                },
-                {
-                    _id: "task3b",
                     task_name: "Grocery shopping at TJ",
                     task_description:
                         "Milk, eggs, water, bread, rice, chicken, onion, apples, banana",
@@ -72,7 +65,7 @@ const WeekChart = () => {
                     task_completed: false,
                 },
                 {
-                    _id: "task3c",
+                    _id: "task3a",
                     task_name: "Grocery shopping at Whole foods",
                     task_description:
                         "Milk, eggs, water, bread, rice, chicken, onion, apples, banana",
@@ -152,6 +145,7 @@ const WeekChart = () => {
 
     //get tasks for the week
     const getTasksForWeek = (weekDates) => {
+    //get
         const tasks = dummyData.filter((day) =>
             weekDates.some((date) => {
                 const jsDay = date.getDay();
@@ -285,7 +279,7 @@ const WeekChart = () => {
                                         day: "numeric",
                                     })}
                                 </p>
-                                <div className="overflow-y-auto h-96 space-y-5 justify-center">
+                                <div className="overflow-y-auto h-96 space-y-5 justify-center items-center">
                                     {dayTasks.map((task) => (
                                         <TaskCard
                                             key={task._id}
