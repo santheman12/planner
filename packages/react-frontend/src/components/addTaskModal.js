@@ -1,4 +1,8 @@
 import React, { useState } from "react";
+import DatePicker from "react-datepicker";
+import { formatDate } from "../libs/normalize";
+
+import "react-datepicker/dist/react-datepicker.css";
 
 interface AddExperienceModalProps {
     isOpen: boolean;
@@ -18,6 +22,8 @@ const AddExperienceModal: React.FC<AddExperienceModalProps> = ({
         task_completed: false,
     });
 
+    const [due_date, set_due_date] = useState(new Date());
+
     if (!isOpen) return null;
 
     function handleChange(event) {
@@ -28,11 +34,28 @@ const AddExperienceModal: React.FC<AddExperienceModalProps> = ({
         }));
     }
 
+    function handleDueDateChange(date) {
+        
+        set_due_date(formatDate(date));
+    }
+
+    const processTags = (tags) => {
+        if (Array.isArray(tags)) {
+          return tags.map(tag => tag.trim()); 
+        }
+        else if (typeof tags === 'string') {
+          return tags.split(",").map(tag => tag.trim());
+        }
+        else {
+          return [];
+        }
+      };
+
     async function submitForm(event) {
         event.preventDefault(); // Prevent the default form submission behavior
-
+        console.log("Test");
         try {
-            console.log(task)
+            console.log(task);
             // Assuming your backend expects task details in JSON format
             const response = await fetch(`http://localhost:8000/tasks`, {
                 method: "POST",
@@ -41,15 +64,13 @@ const AddExperienceModal: React.FC<AddExperienceModalProps> = ({
                 },
                 body: JSON.stringify({
                     ...task,
-                    task_tags: task.task_tags
-                        .split(",")
-                        .map((tag) => tag.trim()), // Assuming task_tags is a string of comma-separated values
+                    task_due_date: due_date,
+                    task_tags: processTags(task.task_tags),
                 }),
             });
 
             if (response.ok) {
                 // Task successfully added to the backend and, consequently, MongoDB Atlas
-                alert("Task added successfully!");
                 setTask({
                     userid: "",
                     task_name: "",
@@ -67,11 +88,9 @@ const AddExperienceModal: React.FC<AddExperienceModalProps> = ({
                     errorText
                 );
                 // Handle server errors (e.g., invalid input or server issues)
-                alert("Failed to add task.");
             }
         } catch (error) {
             console.error("Error adding task:", error);
-            alert("An error occurred while adding the task.");
         }
     }
     return (
@@ -140,35 +159,20 @@ const AddExperienceModal: React.FC<AddExperienceModalProps> = ({
                                         >
                                             Due Date
                                         </label>
-                                        <select
-                                            name="task_due_date"
-                                            value={task.task_due_date}
-                                            onChange={handleChange}
-                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                        >
-                                            <option value="">Select Day</option>
-                                            <option value="Monday">
-                                                Monday
-                                            </option>
-                                            <option value="Tuesday">
-                                                Tuesday
-                                            </option>
-                                            <option value="Wednesday">
-                                                Wednesday
-                                            </option>
-                                            <option value="Thursday">
-                                                Thursday
-                                            </option>
-                                            <option value="Friday">
-                                                Friday
-                                            </option>
-                                            <option value="Saturday">
-                                                Saturday
-                                            </option>
-                                            <option value="Sunday">
-                                                Sunday
-                                            </option>
-                                        </select>
+                                        <div className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                                            <DatePicker
+                                                selected={due_date}
+                                                onChange={(date) =>
+                                                    set_due_date(date)
+                                                }
+                                                showTimeSelect
+                                                timeFormat="HH:mm"
+                                                timeIntervals={15}
+                                                timeCaption="time"
+                                                dateFormat="YYYY-MM-dd h:mm aa"
+                                                className="bg-gray-50"
+                                            />
+                                        </div>
                                     </div>
                                     {/* <div className="col-span-2 sm:col-span-1">
                                         <label

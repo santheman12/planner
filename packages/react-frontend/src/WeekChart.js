@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 import AddExperienceModal from "../src/components/addTaskModal";
 import TaskCard from "./components/TaskCard";
+import { formatDate } from "./libs/normalize";
 
 const WeekChart = () => {
     const dummyData = [
@@ -26,8 +27,7 @@ const WeekChart = () => {
                 {
                     _id: "task2",
                     task_name: "Workout",
-                    task_description:
-                        "Leg Day!",
+                    task_description: "Leg Day!",
                     task_due_date: "2024-03-06T12:00:00.000Z",
                     task_tags: ["health"],
                     task_completed: false,
@@ -54,7 +54,6 @@ const WeekChart = () => {
         {
             id: 5,
             tasks: [
-                
                 {
                     _id: "task3",
                     task_name: "Grocery shopping at TJ",
@@ -125,8 +124,8 @@ const WeekChart = () => {
     }, []);
 
     // update the week base on the current day
-    const updateWeek = (currentDate) => {
-        const weekStart = startOfWeek(currentDate); //sunday
+    const updateWeek = async (currentDate) => {
+        const weekStart = startOfWeek(currentDate);
         const dates = [];
         for (let i = 0; i < 7; i++) {
             const day = new Date(weekStart);
@@ -134,7 +133,11 @@ const WeekChart = () => {
             dates.push(day);
         }
         setDisplayDates(dates);
-        setCurrentWeek(getTasksForWeek(dates));
+
+        const userId = "65e63d93b4015a64f9873840"; // Example user ID
+        // Fetch tasks asynchronously and then update state
+        const fetchedTasks = await getTasksForWeek(dates, currentDate, userId);
+        setCurrentWeek(fetchedTasks);
     };
 
     // first day of the week
@@ -143,18 +146,39 @@ const WeekChart = () => {
         return new Date(date.setDate(diff));
     };
 
-    //get tasks for the week
-    const getTasksForWeek = (weekDates) => {
-    //get
-        const tasks = dummyData.filter((day) =>
-            weekDates.some((date) => {
-                const jsDay = date.getDay();
-                const adjustedDay = jsDay === 0 ? 7 : jsDay;
-                return adjustedDay === day.id;
-            })
-        );
-        return tasks;
-    };
+    async function fetchWeekTasks(userId, currentDate) {
+        const url = `http://localhost:8000/tasks/week?userid=${userId}&current_date=${formatDate(
+            currentDate
+        )}`;
+        try {
+            const response = await fetch(url, { method: "GET" });
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const json = await response.json();
+            return json;
+        } catch (error) {
+            console.error("Fetching week tasks failed: ", error);
+            throw error; // Re-throw the error if you want calling code to handle it
+        }
+    }
+
+    async function getTasksForWeek(weekDates, currentDate, userId) {
+        try {
+            const fetchedWeekTasks = await fetchWeekTasks(userId, currentDate);
+            const tasksForWeek = weekDates.map((date) => {
+                const jsDay = date.getDay() + 1; // Adjust JS day to match your day IDs
+                const dayTasks =
+                    fetchedWeekTasks.find((day) => day._id === jsDay)?.tasks ||
+                    [];
+                return { date, tasks: dayTasks };
+            });
+            return tasksForWeek;
+        } catch (error) {
+            console.error("Error in getTasksForWeek:", error);
+            return [];
+        }
+    }
 
     // previous week
     const goToPreviousWeek = () => {
@@ -262,9 +286,16 @@ const WeekChart = () => {
 
                 <div className="flex mt-8">
                     {displayDates.map((date, index) => {
+                        const formattedDisplayDate = date
+                            .toISOString()
+                            .slice(0, 10);
+
+                        // Find the corresponding day in currentWeek by comparing formatted dates
                         const dayTasks =
                             currentWeek.find(
-                                (day) => day.id === (index + 1) % 8
+                                (day) =>
+                                    day.date.toISOString().slice(0, 10) ===
+                                    formattedDisplayDate
                             )?.tasks || [];
                         return (
                             <div
