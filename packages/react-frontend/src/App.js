@@ -10,13 +10,13 @@ function App() {
   const [authenticated, setAuthenticated] = useState(false);
   const [isLoginMode, setIsLoginMode] = useState(true);
 
-  const handleLogin = (userData) => {
-    // Your login logic here, and if successful:
+  const handleLogin = (userID) => {
+    console.log("logged in with ID:", userID);
     setAuthenticated(true);
   };
 
-  const handleRegister = (userData) => {
-    // Your registration logic here, and if successful:
+  const handleRegister = (userID) => {
+    console.log("registered in with ID:", userID);
     setAuthenticated(true);
   };
 
@@ -36,9 +36,9 @@ function App() {
           <Routes>
             <Route path="/" element={!authenticated ? (
               isLoginMode ? (
-                <Login onLogin={handleLogin} onSwitchToRegister={switchToRegister} />
+                <Login login={handleLogin} onSwitchToRegister={switchToRegister} />
               ) : (
-                <Register onRegister={handleRegister} onSwitchToLogin={switchToLogin} />
+                <Register register={handleRegister} onSwitchToLogin={switchToLogin} />
               )
             ) : (
               <WeekChart />

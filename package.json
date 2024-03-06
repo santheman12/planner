@@ -17,5 +17,8 @@
     "create-react-app": "^5.0.1",
     "dotenv": "^16.4.4",
     "mongoose": "^8.1.2"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.1.1"
   }
 }
