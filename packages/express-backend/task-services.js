@@ -28,12 +28,10 @@ function getWeekTasks(userId, currentDate){
       throw new Error("Invalid currentDate. Please provide a valid Date object.");
     }
 
-
     let promise;
-    console.log(currentDate)
-
     // Calculate the first Sunday from the current day
     const startOfWeek = new Date(currentDate);
+  
    // console.log(startOfWeek.getDay())
     startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getUTCDay()); // Set to the first day of the week (Sunday)
 
@@ -76,6 +74,7 @@ function addTask(task) {
 
 export default {
     addTask,
+    getWeekTasks,
     getTask,
     findTaskByUserId
   };
