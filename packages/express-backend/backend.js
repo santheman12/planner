@@ -5,7 +5,7 @@ import userServices from "./user-services.js"
 import taskServices from "./task-services.js";
 
 const app = express();
-const port = 8000;
+const port = process.env.PORT || 8000;
 
 app.use(cors());
 app.use(express.json());
