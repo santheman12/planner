@@ -14,6 +14,10 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+app.get("/test", (req, res) => {
+  res.send("testing");
+})
+
 app.get("/users", (req, res) => {
   const name = req.params["name"];
   userServices.getUsers(name)
