@@ -6,7 +6,7 @@
   "main": "backend.js",
   "scripts": {
     "dev": "npx nodemon backend.js",
-    " ": "node backend.js",
+    "start": "node backend.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
