@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 
-const Register = ({ onRegister, onSwitchToLogin }) => {
-  const [email, setEmail] = useState('');
+const Register = ({ register, onSwitchToLogin }) => {
+  const [name, setName] = useState('');
+  const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordsMatch, setPasswordsMatch] = useState(true);
@@ -11,8 +12,33 @@ const Register = ({ onRegister, onSwitchToLogin }) => {
     // Check if passwords match
     if (password === confirmPassword) {
       setPasswordsMatch(true);
-      onRegister({ email, password });
-    } else {
+
+      // Call the backend to add the user
+      fetch('http://localhost:8000/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: userName,
+          name: name,
+          password: password,
+        }),
+      })
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error('Failed to add user: ' + response.statusText);
+          }
+        })
+        .then((userData) => {
+          register(userData._id);
+        })
+        .catch(error => {
+          console.error('Error adding user:', error);
+        });}
+    else {
       setPasswordsMatch(false);
     }
   };
@@ -22,11 +48,26 @@ const Register = ({ onRegister, onSwitchToLogin }) => {
       <h2 className="text-2xl font-bold mb-4">Register</h2>
       <form onSubmit={handleRegister}>
         <label className="block mb-4">
-          Email:
+          Name:
           <input
             type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={name}
+            onChange={(e) => {
+              setName(e.target.value);
+              console.log('Name changed:', e.target.value);
+            }}
+            className="w-full h-12 px-3 border rounded-md"
+          />
+        </label>
+        <label className="block mb-4">
+          Username:
+          <input
+            type="text"
+            value={userName}
+            onChange={(e) => {
+              setUserName(e.target.value);
+              console.log('userName changed:', e.target.value);
+            }}
             className="w-full h-12 px-3 border rounded-md"
           />
         </label>
@@ -35,7 +76,10 @@ const Register = ({ onRegister, onSwitchToLogin }) => {
           <input
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              console.log('password changed:', e.target.value);
+            }}
             className="w-full h-12 px-3 border rounded-md"
           />
         </label>
@@ -44,7 +88,10 @@ const Register = ({ onRegister, onSwitchToLogin }) => {
           <input
             type="password"
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={(e) => {
+              setConfirmPassword(e.target.value);
+              console.log('confirm password changed:', e.target.value);
+            }}
             className={`w-full h-12 px-3 border rounded-md ${
               !passwordsMatch ? 'border-red-500' : ''
             }`}

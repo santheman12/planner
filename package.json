@@ -18,6 +18,10 @@
     "concurrently": "^8.2.2",
     "create-react-app": "^5.0.1",
     "dotenv": "^16.4.4",
+    "mongoose": "^8.1.2"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.1.1"
     "mongoose": "^8.1.2",
     "node-fetch": "^2.6.1"
   }

@@ -63,6 +63,7 @@ app.get("/tasks/week", (req, res) => {
 
 
 app.post("/users", (req, res) => {
+  console.log(req.body);
   const userToAdd = req.body;
   userServices.addUser(userToAdd)
   .then( result => {
@@ -74,6 +75,19 @@ app.post("/users", (req, res) => {
   }).catch( err => {
     res.status(500).send("Internal Server Error.")
   })
+});
+
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+
+  // Query the database to find the user with the provided credentials
+  const user = await userServices.getUser( username, password );
+
+  if (user) {
+    res.status(200).json({ userId: user._id });
+  } else {
+    res.status(401).json({ error: "Invalid username or password" });
+  }
 });
 
 app.post("/tasks", (req, res) => {
