@@ -24,16 +24,14 @@ function getTask(id) {
 function getWeekTasks(userId, currentDate){
     currentDate = new Date(currentDate);
     
-      if (currentDate !== undefined && !(currentDate instanceof Date) || isNaN(currentDate)) {
-        throw new Error("Invalid currentDate. Please provide a valid Date object.");
+    if (currentDate !== undefined && !(currentDate instanceof Date) || isNaN(currentDate)) {
+      throw new Error("Invalid currentDate. Please provide a valid Date object.");
     }
 
     let promise;
-
     // Calculate the first Sunday from the current day
     const startOfWeek = new Date(currentDate);
-    console.log(startOfWeek)
-    console.log(startOfWeek.getUTCDay())
+  
    // console.log(startOfWeek.getDay())
     startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getUTCDay()); // Set to the first day of the week (Sunday)
 

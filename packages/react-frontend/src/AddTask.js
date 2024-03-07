@@ -36,17 +36,14 @@ const AddTask = () => {
   
       if (response.ok) {
         // Task successfully added to the backend and, consequently, MongoDB Atlas
-        alert('Task added successfully!');
         setTask({ userid: '', task_name: '', task_due_date: '', task_description: '', task_tags: [], task_completed: false }); // Reset form
       } else {
         const errorText = await response.text(); // Or .json() if your backend sends a JSON response
         console.error('Failed to add task. Status:', response.status, 'Response:', errorText);
         // Handle server errors (e.g., invalid input or server issues)
-        alert('Failed to add task.');
       }
     } catch (error) {
       console.error('Error adding task:', error);
-      alert('An error occurred while adding the task.');
     }
   }
 
