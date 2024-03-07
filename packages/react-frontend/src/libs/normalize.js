@@ -12,3 +12,4 @@ export function formatDate(dateString) {
     // const correct = new Date(result.getTime() - result.getTimezoneOffset() * -60000 );
     // console.log(correct)
     return dateString;
+}
