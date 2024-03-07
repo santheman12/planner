@@ -5,14 +5,18 @@ import userServices from "./user-services.js"
 import taskServices from "./task-services.js";
 
 const app = express();
-const port = 8000;
+const port = process.env.PORT || 8000;
 
 app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Hello World test!");
 });
+
+app.get("/test", (req, res) => {
+  res.send("testing");
+})
 
 app.get("/users", (req, res) => {
   const name = req.params["name"];
