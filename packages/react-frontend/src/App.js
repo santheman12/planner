@@ -1,10 +1,9 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Header from './components/header'; // Import the Header component
 import Login from './Login';
 import Register from './Register';
 import WeekChart from './WeekChart';
-import DailyChart from './DailyChart';
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -28,22 +27,27 @@ function App() {
     setIsLoginMode(true);
   };
 
+  const handleSignOut = () => {
+    setAuthenticated(false);
+    setIsLoginMode(true);
+  };
+
   return (
     <Router>
       <div className="App">
-        <Header />
+        <Header handleSignOut={handleSignOut} />
         <div className="App-body mt-10">
           <Routes>
-            <Route path="/" element={!authenticated ? (
+            <Route path="/login" element={!authenticated ? (
               isLoginMode ? (
                 <Login login={handleLogin} onSwitchToRegister={switchToRegister} />
               ) : (
                 <Register register={handleRegister} onSwitchToLogin={switchToLogin} />
               )
             ) : (
-              <WeekChart />
+              <Navigate to="/weekview" />
             )} />
-            <Route path="/DailyChart" element={<DailyChart />} />
+            <Route path="/weekview" element={<WeekChart />} />
           </Routes>
         </div>
       </div>
