@@ -46,10 +46,25 @@ app.get("/tasks", (req, res) => {
   })
 });
 
-app.get("/tasks/week", (req, res) => {
+app.get("/tasks/week/true", (req, res) => {
   const userid = req.query.userid;
   const current_date = req.query.current_date;
-  taskServices.getWeekTasks(userid, current_date)
+  taskServices.getWeekTasksTrue(userid, current_date)
+  .then( result => {
+    if (result.length > 0) {
+        res.status(200).send(result);
+      } else {
+        res.status(404).send("Resources not found.");
+      }
+  }).catch( err => { 
+    res.status(500).send("Internal Server Error.")
+  })
+});
+
+app.get("/tasks/week/false", (req, res) => {
+  const userid = req.query.userid;
+  const current_date = req.query.current_date;
+  taskServices.getWeekTasksFalse(userid, current_date)
   .then( result => {
     if (result.length > 0) {
         res.status(200).send(result);
