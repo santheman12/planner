@@ -80,13 +80,21 @@ const AddExperienceModal: React.FC<AddExperienceModalProps> = ({
                     task_completed: false,
                 }); // Reset form
             } else {
-                const errorText = await response.text(); // Or .json() if your backend sends a JSON response
+                //const errorText = await response.text(); // Or .json() if your backend sends a JSON response
                 console.error(
                     "Failed to add task. Status:",
                     response.status,
-                    "Response:",
-                    errorText
+                    //"Response:",
+                    //errorText
                 );
+                setTask({
+                    userid: "",
+                    task_name: "",
+                    task_due_date: "",
+                    task_description: "",
+                    task_tags: [],
+                    task_completed: false,
+                });
                 // Handle server errors (e.g., invalid input or server issues)
             }
         } catch (error) {
@@ -171,6 +179,7 @@ const AddExperienceModal: React.FC<AddExperienceModalProps> = ({
                                                 timeCaption="time"
                                                 dateFormat="YYYY-MM-dd h:mm aa"
                                                 className="bg-gray-50"
+                                                data-testid="mock-datepicker"
                                             />
                                         </div>
                                     </div>
