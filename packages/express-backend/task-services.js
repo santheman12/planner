@@ -61,7 +61,7 @@ function setTaskFalse(taskId) {
   return promise;
 }
 
-function getWeekTasks(userId, currentDate){
+function getWeekTasksTrue(userId, currentDate){
     currentDate = new Date(currentDate);
     
     if (currentDate !== undefined && !(currentDate instanceof Date) || isNaN(currentDate)) {
@@ -84,6 +84,7 @@ function getWeekTasks(userId, currentDate){
         {
             $match: {
                 userid: new mongoose.Types.ObjectId(userId),
+                task_completed: true,
                 task_due_date: {
                     $gte: startOfWeek,
                     $lt: endOfWeek
@@ -102,6 +103,48 @@ function getWeekTasks(userId, currentDate){
     return promise
 }
 
+function getWeekTasksFalse(userId, currentDate){
+  currentDate = new Date(currentDate);
+  
+  if (currentDate !== undefined && !(currentDate instanceof Date) || isNaN(currentDate)) {
+    throw new Error("Invalid currentDate. Please provide a valid Date object.");
+  }
+
+  let promise;
+  // Calculate the first Sunday from the current day
+  const startOfWeek = new Date(currentDate);
+
+ // console.log(startOfWeek.getDay())
+  startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getUTCDay()); // Set to the first day of the week (Sunday)
+
+  // Calculate the end of the week (7 days later)
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 7);
+
+  // Define the aggregation pipeline
+  const pipeline = [
+      {
+          $match: {
+              userid: new mongoose.Types.ObjectId(userId),
+              task_completed: false,
+              task_due_date: {
+                  $gte: startOfWeek,
+                  $lt: endOfWeek
+              }
+          }
+      },
+      {
+        $group: {
+            _id: { $dayOfWeek: { date: "$task_due_date", timezone: "UTC" } },
+            tasks: { $push: "$$ROOT" } // push documents into an array for each day
+        }
+    },
+  ];
+
+  promise = taskModel.aggregate(pipeline);
+  return promise
+}
+
 function findTaskByUserId(id) {
     return taskModel.find({ userid: id });
   }
@@ -114,7 +157,8 @@ function addTask(task) {
 
 export default {
     addTask,
-    getWeekTasks,
+    getWeekTasksTrue,
+    getWeekTasksFalse,
     getTask,
     findTaskByUserId,
     setTaskFalse,
