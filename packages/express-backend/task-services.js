@@ -21,6 +21,46 @@ function getTask(id) {
     return promise;
 }
 
+function setTaskTrue(taskId) {
+  let promise;
+  if (!taskId) {
+    promise = Promise.reject(new Error('Task ID is required'));
+  } else {
+    promise = taskModel.findById(taskId)
+      .then(task => {
+        if (!task) {
+          throw new Error('Task not found');
+        }
+
+        // Update task_completed field
+        task.task_completed = true;
+
+        // Save the updated task
+        return task.save();
+      });
+  }
+  return promise;
+}
+
+function setTaskFalse(taskId) {
+  let promise;
+  if (!taskId) {
+    promise = Promise.reject(new Error('Task ID is required'));
+  } else {
+    promise = taskModel.findById(taskId)
+      .then(task => {
+        if (!task) {
+          throw new Error('Task not found');
+        }
+        // Update task_completed field
+        task.task_completed = false;
+        // Save the updated task
+        return task.save();
+      });
+  }
+  return promise;
+}
+
 function getWeekTasks(userId, currentDate){
     currentDate = new Date(currentDate);
     
@@ -55,7 +95,7 @@ function getWeekTasks(userId, currentDate){
               _id: { $dayOfWeek: { date: "$task_due_date", timezone: "UTC" } },
               tasks: { $push: "$$ROOT" } // push documents into an array for each day
           }
-      }
+      },
     ];
 
     promise = taskModel.aggregate(pipeline);
@@ -76,5 +116,7 @@ export default {
     addTask,
     getWeekTasks,
     getTask,
-    findTaskByUserId
+    findTaskByUserId,
+    setTaskFalse,
+    setTaskTrue,
   };
