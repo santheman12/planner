@@ -62,6 +62,40 @@ app.get("/tasks/week", (req, res) => {
 });
 
 
+app.put("/tasks/true", (req, res) => {
+  const taskid = req.query.taskid;
+  taskServices.setTaskTrue(taskid)
+    .then(updatedTask => {
+      res.status(200).send({ task: updatedTask });
+    })
+    .catch(error => {
+      if (error.message === 'Task ID is required') {
+        res.status(400).send("Task ID is required.");
+      } else if (error.message === 'Task not found') {
+        res.status(404).send("Task not found.");
+      } else {
+        res.status(500).send("Internal Server Error.");
+      }
+    });
+});
+
+app.put("/tasks/false", (req, res) => {
+  const taskid = req.query.taskid;
+  taskServices.setTaskFalse(taskid)
+    .then(updatedTask => {
+      res.status(200).send({ task: updatedTask });
+    })
+    .catch(error => {
+      if (error.message === 'Task ID is required') {
+        res.status(400).send("Task ID is required.");
+      } else if (error.message === 'Task not found') {
+        res.status(404).send("Task not found.");
+      } else {
+        res.status(500).send("Internal Server Error.");
+      }
+    });
+});
+
 app.post("/users", (req, res) => {
   console.log(req.body);
   const userToAdd = req.body;
