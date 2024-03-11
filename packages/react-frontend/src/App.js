@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import Header from './components/header'; // Import the Header component
+import { Route, Routes, useNavigate } from 'react-router-dom';
+import Header from './components/header';
 import Login from './Login';
 import Register from './Register';
 import WeekChart from './WeekChart';
@@ -8,15 +8,21 @@ import WeekChart from './WeekChart';
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
   const [isLoginMode, setIsLoginMode] = useState(true);
+  const [userId, setUserId] = useState(null);
+  const navigate = useNavigate();
 
   const handleLogin = (userID) => {
     console.log("logged in with ID:", userID);
+    setUserId(userID);
     setAuthenticated(true);
+    navigate(`/WeekChart/${userID}`);
   };
 
   const handleRegister = (userID) => {
     console.log("registered in with ID:", userID);
+    setUserId(userID);
     setAuthenticated(true);
+    navigate(`/WeekChart/${userID}`);
   };
 
   const switchToRegister = () => {
@@ -30,28 +36,32 @@ function App() {
   const handleSignOut = () => {
     setAuthenticated(false);
     setIsLoginMode(true);
+    setUserId(null);
+    navigate('/');
+    console.log("hitting the function");
   };
 
   return (
-    <Router>
+    
       <div className="App">
         <Header handleSignOut={handleSignOut} />
         <div className="App-body mt-10">
           <Routes>
-            <Route path="/login" element={!authenticated ? (
+            {!authenticated ? (
               isLoginMode ? (
-                <Login login={handleLogin} onSwitchToRegister={switchToRegister} />
+                <Route path="/" element={<Login login={handleLogin} onSwitchToRegister={switchToRegister} />} />
               ) : (
-                <Register register={handleRegister} onSwitchToLogin={switchToLogin} />
+                <Route path="/" element={<Register register={handleRegister} onSwitchToLogin={switchToLogin} />} />
               )
             ) : (
-              <Navigate to="/weekview" />
-            )} />
-            <Route path="/weekview" element={<WeekChart />} />
+              <>
+                <Route path={`/WeekChart/${userId}`} element={<WeekChart />} />
+                {/* <Route path={`/DailyChart/${userId}`} element={<DailyChart />} /> */}
+              </>
+            )}
           </Routes>
         </div>
       </div>
-    </Router>
   );
 }
 
