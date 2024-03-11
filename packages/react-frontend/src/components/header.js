@@ -3,7 +3,7 @@ import logo from './Logo.png';
 
 const Header = ({ handleSignOut }) => {
   const signOut = () => {
-    handleSignOut();
+    handleSignOut()
   };
 
   return (
@@ -21,5 +21,3 @@ const Header = ({ handleSignOut }) => {
 };
 
 export default Header;
-
-
