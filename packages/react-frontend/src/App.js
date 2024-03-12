@@ -12,14 +12,12 @@ function App() {
   const navigate = useNavigate();
 
   const handleLogin = (userID) => {
-    console.log("logged in with ID:", userID);
     setUserId(userID);
     setAuthenticated(true);
     navigate(`/WeekChart/${userID}`);
   };
 
   const handleRegister = (userID) => {
-    console.log("registered in with ID:", userID);
     setUserId(userID);
     setAuthenticated(true);
     navigate(`/WeekChart/${userID}`);

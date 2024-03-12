@@ -54,7 +54,7 @@ const Register = ({ register, onSwitchToLogin }) => {
             value={name}
             onChange={(e) => {
               setName(e.target.value);
-              console.log('Name changed:', e.target.value);
+              // console.log('Name changed:', e.target.value);
             }}
             className="w-full h-12 px-3 border rounded-md"
           />
@@ -66,7 +66,7 @@ const Register = ({ register, onSwitchToLogin }) => {
             value={userName}
             onChange={(e) => {
               setUserName(e.target.value);
-              console.log('userName changed:', e.target.value);
+              // console.log('userName changed:', e.target.value);
             }}
             className="w-full h-12 px-3 border rounded-md"
           />
@@ -78,7 +78,7 @@ const Register = ({ register, onSwitchToLogin }) => {
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
-              console.log('password changed:', e.target.value);
+              // console.log('password changed:', e.target.value);
             }}
             className="w-full h-12 px-3 border rounded-md"
           />
@@ -90,7 +90,7 @@ const Register = ({ register, onSwitchToLogin }) => {
             value={confirmPassword}
             onChange={(e) => {
               setConfirmPassword(e.target.value);
-              console.log('confirm password changed:', e.target.value);
+              // console.log('confirm password changed:', e.target.value);
             }}
             className={`w-full h-12 px-3 border rounded-md ${
               !passwordsMatch ? 'border-red-500' : ''

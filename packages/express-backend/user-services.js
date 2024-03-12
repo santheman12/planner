@@ -34,7 +34,7 @@ function findUserByUsernameAndPassword(username, password) {
 }
 
 function getUser(username, password) {
-  console.log({username, password})
+  // console.log({username, password})
   let promise;
 
   if (username === undefined && password === undefined) {
@@ -60,7 +60,7 @@ function addUser(user) {
   
   return promise
     .then(result => {
-      console.log('User added successfully:', result);
+      // console.log('User added successfully:', result);
       return result;
     })
     .catch(error => {

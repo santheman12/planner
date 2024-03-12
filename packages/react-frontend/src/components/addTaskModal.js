@@ -13,6 +13,7 @@ interface AddExperienceModalProps {
 const AddExperienceModal: React.FC<AddExperienceModalProps> = ({
     isOpen,
     setShowModal,
+    reloadWeek
     userId
 }) => {
     const [task, setTask] = useState({
@@ -55,7 +56,7 @@ const AddExperienceModal: React.FC<AddExperienceModalProps> = ({
 
     async function submitForm(event) {
         event.preventDefault(); // Prevent the default form submission behavior
-        console.log("Test");
+        // console.log("Test");
         try {
             console.log(task);
             // Assuming your backend expects task details in JSON format
@@ -81,6 +82,8 @@ const AddExperienceModal: React.FC<AddExperienceModalProps> = ({
                     task_tags: [],
                     task_completed: false,
                 }); // Reset form
+                setShowModal(false);
+                reloadWeek(new Date());
             } else {
                 //const errorText = await response.text(); // Or .json() if your backend sends a JSON response
                 console.error(

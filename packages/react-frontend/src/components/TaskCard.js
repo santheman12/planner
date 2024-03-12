@@ -13,8 +13,9 @@ const TaskCard = ({
     onComplete,
     isComplete,
 }) => {
+    // console.log(_id);
     return (
-        <div className="max-w-sm p-4 bg-white border border-gray-100 rounded-lg shadow mx-2">
+        <div className="flex-1 max-w-sm p-4 bg-white border border-gray-100 rounded-lg shadow mx-2">
             <div className="flex justify-between">
                 <h6 className="mb-3 text-md font-semibold tracking-tight text-gray-900 truncate">
                     {task_name}
@@ -43,7 +44,7 @@ const TaskCard = ({
             </p>
 
             <div className="mb-2 text-sm font-medium">
-                {task_tags.map((tag, index) => {
+                {task_tags?.map((tag, index) => {
                     return (
                         <span className="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
                             {tag}

@@ -1,3 +1,4 @@
+"use client"
 import { useState, useEffect } from "react";
 import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 import AddExperienceModal from "../src/components/addTaskModal";
@@ -6,104 +7,6 @@ import { formatDate } from "./libs/normalize";
 import { useParams } from 'react-router-dom';
 
 const WeekChart = () => {
-    const dummyData = [
-        {
-            id: 1,
-            tasks: [
-                {
-                    _id: "task1",
-                    task_name: "Garden work",
-                    task_description:
-                        "Fix the plants, add water, and plant new seeds",
-                    task_due_date: "2024-03-05T08:00:00.000Z",
-                    task_tags: ["home"],
-                    task_completed: false,
-                },
-            ],
-        },
-        { id: 2, tasks: [] }, // No tasks on Monday
-        {
-            id: 3,
-            tasks: [
-                {
-                    _id: "task2",
-                    task_name: "Workout",
-                    task_description: "Leg Day!",
-                    task_due_date: "2024-03-06T12:00:00.000Z",
-                    task_tags: ["health"],
-                    task_completed: false,
-                },
-                {
-                    _id: "task2b",
-                    task_name: "Team meeting",
-                    task_description: "Discuss new features, retrospective",
-                    task_due_date: "2024-03-07T10:00:00.000Z",
-                    task_tags: ["work", "urgent"],
-                    task_completed: false,
-                },
-                {
-                    _id: "task2c",
-                    task_name: "Team meeting 2",
-                    task_description: "Discuss new features, retrospective",
-                    task_due_date: "2024-03-07T10:00:00.000Z",
-                    task_tags: ["work", "urgent"],
-                    task_completed: false,
-                },
-            ],
-        },
-        { id: 4, tasks: [] }, // No tasks on Wednesday
-        {
-            id: 5,
-            tasks: [
-                {
-                    _id: "task3",
-                    task_name: "Grocery shopping at TJ",
-                    task_description:
-                        "Milk, eggs, water, bread, rice, chicken, onion, apples, banana",
-                    task_due_date: "2024-03-09T12:00:00.000Z",
-                    task_tags: ["errands"],
-                    task_completed: false,
-                },
-                {
-                    _id: "task3a",
-                    task_name: "Grocery shopping at Whole foods",
-                    task_description:
-                        "Milk, eggs, water, bread, rice, chicken, onion, apples, banana",
-                    task_due_date: "2024-03-09T12:00:00.000Z",
-                    task_tags: ["errands"],
-                    task_completed: false,
-                },
-            ],
-        },
-        {
-            id: 6,
-            tasks: [
-                {
-                    _id: "task4",
-                    task_name: "Call plumber",
-                    task_description: "Tell them to come ASAP!",
-                    task_due_date: "2024-03-10T15:00:00.000Z",
-                    task_tags: ["home", "urgent"],
-                    task_completed: false,
-                },
-            ],
-        },
-        {
-            id: 7,
-            tasks: [
-                {
-                    _id: "task5",
-                    task_name: "Visit parents",
-                    task_description:
-                        "Make sure to buy a present for them, maybe a new plant!",
-                    task_due_date: "2024-03-11T18:00:00.000Z",
-                    task_tags: ["family"],
-                    task_completed: false,
-                },
-            ],
-        },
-    ];
-
     const [showModal, setShowModal] = useState(false);
 
     // current week's data
@@ -128,7 +31,7 @@ const WeekChart = () => {
     const grabbedUserId = userId;
 
     // update the week base on the current day
-    const updateWeek = async (currentDate) => {
+    async function updateWeek (currentDate) {
         const weekStart = startOfWeek(currentDate);
         const dates = [];
         for (let i = 0; i < 7; i++) {
@@ -142,6 +45,9 @@ const WeekChart = () => {
         // Fetch tasks asynchronously and then update state
         const fetchedTasks = await getTasksForWeek(dates, currentDate, userId);
         setCurrentWeek(fetchedTasks);
+        // fetch the initial done tasks
+        const initalDoneTasks = await getDoneTasks(dates, currentDate, userId);
+        setDoneTasks(initalDoneTasks);
     };
 
     // first day of the week
@@ -151,7 +57,7 @@ const WeekChart = () => {
     };
 
     async function fetchWeekTasks(userId, currentDate) {
-        const url = `http://localhost:8000/tasks/week?userid=${userId}&current_date=${formatDate(
+        const url = `http://localhost:8000/tasks/week/false?userid=${userId}&current_date=${formatDate(
             currentDate
         )}`;
         try {
@@ -184,6 +90,71 @@ const WeekChart = () => {
         }
     }
 
+    async function fetchDoneTasks(userId, currentDate) {
+        const url = `http://localhost:8000/tasks/week/true?userid=${userId}&current_date=${formatDate(
+            currentDate
+        )}`;
+        try {
+            const response = await fetch(url, { method: "GET" });
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const json = await response.json();
+            return json;
+        } catch (error) {
+            console.error("Fetching week tasks failed: ", error);
+            throw error; // Re-throw the error if you want calling code to handle it
+        }
+    }
+
+    async function getDoneTasks(weekDates, currentDate, userId) {
+        try {
+            const fetchedDoneTasks = await fetchDoneTasks(userId, currentDate);
+            const doneTasks = weekDates.map((date) => {
+                const jsDay = date.getDay() + 2; // Adjust JS day to match your day IDs
+                const dayDoneTasks =
+                    fetchedDoneTasks.find((day) => day._id === jsDay)?.tasks ||
+                    [];
+                return { date, tasks: dayDoneTasks };
+            });
+
+            return doneTasks;
+        } catch (error) {
+            console.error("Error in getDoneTasks:", error);
+            return [];
+        }
+    }
+
+    async function setTaskCompleteTrue(taskId) {
+        const url = `http://localhost:8000/tasks/true?taskid=${taskId}`;
+        try {
+            const response = await fetch(url, { method: "PUT" });
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const json = await response.json();
+            return json;
+        } catch (error) {
+            console.error("changing task complete to true failed with : ", error);
+            throw error; // Re-throw the error if you want calling code to handle it
+        }
+    }
+
+    async function setTaskCompleteFalse(taskId) {
+        const url = `http://localhost:8000/tasks/false?taskid=${taskId}`;
+        try {
+            const response = await fetch(url, { method: "PUT" });
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const json = await response.json();
+            return json;
+        } catch (error) {
+            console.error("changing task complete to false failed with : ", error);
+            throw error; // Re-throw the error if you want calling code to handle it
+        }
+    }
+
     // previous week
     const goToPreviousWeek = () => {
         const newDate = new Date(
@@ -200,54 +171,17 @@ const WeekChart = () => {
         updateWeek(newDate);
     };
 
-    const handleTaskCompletion = (taskId) => {
-        // check if already done
-        const isTaskDone = doneTasks.some((task) => task._id === taskId);
-
-        if (isTaskDone) {
-            //if moving it from done back into the calender
-            const taskToMove = doneTasks.find((task) => task._id === taskId);
-
-            //upadate the done list
-            const updatedDoneTasks = doneTasks.filter(
-                (task) => task._id !== taskId
-            );
-
-            // find the day the task is due
-            const taskDay = new Date(taskToMove.task_due_date).getDay();
-            console.log(taskDay);
-            const dayIndex = taskDay === 0 ? 6 : taskDay;
-
-            const updatedWeek = [...currentWeek];
-            updatedWeek[dayIndex].tasks = [
-                ...updatedWeek[dayIndex].tasks,
-                { ...taskToMove, task_completed: false },
-            ];
-
-            setDoneTasks(updatedDoneTasks);
-            setCurrentWeek(updatedWeek);
-        } else {
-            // move task doneTasks
-            let taskToMove;
-            const updatedWeek = currentWeek.map((day) => {
-                const updatedTasks = day.tasks.filter((task) => {
-                    //return false and remove from updated tasks
-                    if (task._id === taskId) {
-                        taskToMove = task;
-                        return false;
-                    }
-                    return true;
-                });
-                return { ...day, tasks: updatedTasks };
-            });
-
-            if (taskToMove) {
-                setDoneTasks([
-                    ...doneTasks,
-                    { ...taskToMove, task_completed: true },
-                ]);
+    const handleTaskCompletion = async (taskId) => {
+        const taskIsDone = doneTasks.some((day) => day.tasks.some((task) => task._id === taskId));
+        try {
+            if (taskIsDone) {
+                await setTaskCompleteFalse(taskId);
+            } else {
+                await setTaskCompleteTrue(taskId);
             }
-            setCurrentWeek(updatedWeek);
+            updateWeek(new Date());
+        } catch (error) {
+            console.error("Failed to change task completion status: ", error);
         }
     };
 
@@ -273,6 +207,7 @@ const WeekChart = () => {
                     <AddExperienceModal
                         isOpen={showModal}
                         setShowModal={setShowModal}
+                        reloadWeek={updateWeek}
                         userId={grabbedUserId}
                     />
 
@@ -333,19 +268,19 @@ const WeekChart = () => {
                     <div className="m-12">
                         <p className="text-xl font-semibold mb-4">Done</p>
                         <div className="flex overflow-x-scroll w-full space-x-1 py-3">
-                            {doneTasks.map((task) => (
-                                <div className="max-w-[16rem] shrink-0">
-                                    <TaskCard
-                                        key={task._id}
-                                        {...task}
-                                        onComplete={handleTaskCompletion}
-                                        isComplete={task.task_completed}
-                                    />
+                        {doneTasks.map((doneTask) => 
+                            doneTask.tasks.map((task) => (
+                                <div key={task._id} className="max-w-[16rem] shrink-0">
+                                <TaskCard
+                                    {...task}
+                                    onComplete={handleTaskCompletion}
+                                    isComplete={task.task_completed}
+                                />
                                 </div>
-                            ))}
+                            ))
+                        )}
                         </div>
                     </div>
-
                     <div className="m-12">
                         <p className="text-xl font-semibold mb-4 text-red-500">
                             Overdue
