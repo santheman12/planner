@@ -13,7 +13,7 @@ interface AddExperienceModalProps {
 const AddExperienceModal: React.FC<AddExperienceModalProps> = ({
     isOpen,
     setShowModal,
-    reloadWeek
+    reloadWeek,
     userId
 }) => {
     const [task, setTask] = useState({
