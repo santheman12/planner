@@ -4,7 +4,7 @@ import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 import AddExperienceModal from "../src/components/addTaskModal";
 import TaskCard from "./components/TaskCard";
 import { formatDate } from "./libs/normalize";
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 
 const WeekChart = () => {
     const [showModal, setShowModal] = useState(false);
@@ -27,8 +27,13 @@ const WeekChart = () => {
         updateWeek(new Date());
     }, []);
 
-    const { userId } = useParams();
-    const grabbedUserId = userId;
+    // const { userId } = useParams();
+    // const grabbedUserId = userId;
+    
+    const {state} = useLocation();
+    const { userId } = state;
+    const tempU = userId;
+    console.log(tempU)
 
     // update the week base on the current day
     async function updateWeek (currentDate) {
@@ -41,7 +46,7 @@ const WeekChart = () => {
         }
         setDisplayDates(dates);
 
-        const userId = grabbedUserId; // Example user ID
+        const userId = tempU; // Example user ID
         // Fetch tasks asynchronously and then update state
         const fetchedTasks = await getTasksForWeek(dates, currentDate, userId);
         setCurrentWeek(fetchedTasks);
@@ -77,7 +82,7 @@ const WeekChart = () => {
         try {
             const fetchedWeekTasks = await fetchWeekTasks(userId, currentDate);
             const tasksForWeek = weekDates.map((date) => {
-                const jsDay = date.getDay() + 1; // Adjust JS day to match your day IDs
+                const jsDay = date.getDay() + 2; // Adjust JS day to match your day IDs
                 const dayTasks =
                     fetchedWeekTasks.find((day) => day._id === jsDay)?.tasks ||
                     [];
@@ -111,7 +116,7 @@ const WeekChart = () => {
         try {
             const fetchedDoneTasks = await fetchDoneTasks(userId, currentDate);
             const doneTasks = weekDates.map((date) => {
-                const jsDay = date.getDay() + 2; // Adjust JS day to match your day IDs
+                const jsDay = date.getDay() + 1; // Adjust JS day to match your day IDs
                 const dayDoneTasks =
                     fetchedDoneTasks.find((day) => day._id === jsDay)?.tasks ||
                     [];
@@ -185,13 +190,17 @@ const WeekChart = () => {
         }
     };
 
+    const getMonthName = (date) => {
+        return date.toLocaleDateString('en-US', { month: 'long' });
+      };
+
     return (
         <>
             <div className="bg-white px-4 max-w lg:mx-auto lg:px-8">
                 <div className="flex flex-col mx-12">
                     <div className="flex flex-row space-x-10">
                         <p className="text-4xl font-bold text-gray-800">
-                            February 2024
+                            {displayDates.length > 0 ? `${getMonthName(displayDates[0])} ${displayDates[0].getFullYear()}` : 'Loading...'}
                         </p>
                         <button
                             type="button"
@@ -208,7 +217,7 @@ const WeekChart = () => {
                         isOpen={showModal}
                         setShowModal={setShowModal}
                         reloadWeek={updateWeek}
-                        userId={grabbedUserId}
+                        userId={tempU}
                     />
 
                     <div className="flex space-x-1 mt-4">

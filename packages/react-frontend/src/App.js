@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import Header from './components/header';
 import Login from './Login';
 import Register from './Register';
@@ -11,16 +11,33 @@ function App() {
   const [userId, setUserId] = useState(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const id = JSON.parse(localStorage.getItem('userId'));
+    const isAuthenticated = JSON.parse(localStorage.getItem('authenticated'));
+    if (id && isAuthenticated) {
+      setUserId(id);
+      setAuthenticated(true)
+    }
+    console.log(userId)
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('userId', JSON.stringify(userId));
+    console.log("set the user Id in local storage as " + userId)
+  }, [userId]);
+
   const handleLogin = (userID) => {
     setUserId(userID);
     setAuthenticated(true);
-    navigate(`/WeekChart/${userID}`);
+    localStorage.setItem('authenticated', 'true')
+    navigate(`/WeekChart`, { state: {userId: userID} });
   };
 
   const handleRegister = (userID) => {
     setUserId(userID);
     setAuthenticated(true);
-    navigate(`/WeekChart/${userID}`);
+    localStorage.setItem('authenticated', 'true')
+    navigate(`/WeekChart`, { state: {userId: userID} });
   };
 
   const switchToRegister = () => {
@@ -53,8 +70,7 @@ function App() {
               )
             ) : (
               <>
-                <Route path={`/WeekChart/:userId`} element={<WeekChart />} />
-                {/* <Route path={`/DailyChart/${userId}`} element={<DailyChart />} /> */}
+                <Route path={`/WeekChart/*`} element={<WeekChart />} />
               </>
             )}
           </Routes>

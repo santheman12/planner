@@ -75,7 +75,7 @@ const AddExperienceModal: React.FC<AddExperienceModalProps> = ({
             if (response.ok) {
                 // Task successfully added to the backend and, consequently, MongoDB Atlas
                 setTask({
-                    userid: "",
+                    userid: userId,
                     task_name: "",
                     task_due_date: "",
                     task_description: "",
