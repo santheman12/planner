@@ -7,14 +7,16 @@ import "react-datepicker/dist/react-datepicker.css";
 interface AddExperienceModalProps {
     isOpen: boolean;
     setShowModal: (isOpen: boolean) => void;
+    userId: string;
 }
 
 const AddExperienceModal: React.FC<AddExperienceModalProps> = ({
     isOpen,
     setShowModal,
+    userId
 }) => {
     const [task, setTask] = useState({
-        userid: "",
+        userid: userId,
         task_name: "",
         task_due_date: "",
         task_description: "",
