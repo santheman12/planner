@@ -7,15 +7,17 @@ import "react-datepicker/dist/react-datepicker.css";
 interface AddExperienceModalProps {
     isOpen: boolean;
     setShowModal: (isOpen: boolean) => void;
+    userId: string;
 }
 
 const AddExperienceModal: React.FC<AddExperienceModalProps> = ({
     isOpen,
     setShowModal,
     reloadWeek
+    userId
 }) => {
     const [task, setTask] = useState({
-        userid: "",
+        userid: userId,
         task_name: "",
         task_due_date: "",
         task_description: "",
@@ -83,13 +85,21 @@ const AddExperienceModal: React.FC<AddExperienceModalProps> = ({
                 setShowModal(false);
                 reloadWeek(new Date());
             } else {
-                const errorText = await response.text(); // Or .json() if your backend sends a JSON response
+                //const errorText = await response.text(); // Or .json() if your backend sends a JSON response
                 console.error(
                     "Failed to add task. Status:",
                     response.status,
-                    "Response:",
-                    errorText
+                    //"Response:",
+                    //errorText
                 );
+                setTask({
+                    userid: "",
+                    task_name: "",
+                    task_due_date: "",
+                    task_description: "",
+                    task_tags: [],
+                    task_completed: false,
+                });
                 // Handle server errors (e.g., invalid input or server issues)
             }
         } catch (error) {
@@ -174,6 +184,7 @@ const AddExperienceModal: React.FC<AddExperienceModalProps> = ({
                                                 timeCaption="time"
                                                 dateFormat="YYYY-MM-dd h:mm aa"
                                                 className="bg-gray-50"
+                                                data-testid="mock-datepicker"
                                             />
                                         </div>
                                     </div>
