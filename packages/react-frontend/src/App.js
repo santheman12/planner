@@ -55,7 +55,7 @@ function App() {
               )
             ) : (
               <>
-                <Route path={`/WeekChart/${userId}`} element={<WeekChart />} />
+                <Route path={`/WeekChart/:userId`} element={<WeekChart />} />
                 {/* <Route path={`/DailyChart/${userId}`} element={<DailyChart />} /> */}
               </>
             )}

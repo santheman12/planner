@@ -3,6 +3,7 @@ import { GoArrowLeft, GoArrowRight } from "react-icons/go";
 import AddExperienceModal from "../src/components/addTaskModal";
 import TaskCard from "./components/TaskCard";
 import { formatDate } from "./libs/normalize";
+import { useParams } from 'react-router-dom';
 
 const WeekChart = () => {
     const dummyData = [
@@ -123,6 +124,9 @@ const WeekChart = () => {
         updateWeek(new Date());
     }, []);
 
+    const { userId } = useParams();
+    const grabbedUserId = userId;
+
     // update the week base on the current day
     const updateWeek = async (currentDate) => {
         const weekStart = startOfWeek(currentDate);
@@ -134,7 +138,7 @@ const WeekChart = () => {
         }
         setDisplayDates(dates);
 
-        const userId = "65e63d93b4015a64f9873840"; // Example user ID
+        const userId = grabbedUserId; // Example user ID
         // Fetch tasks asynchronously and then update state
         const fetchedTasks = await getTasksForWeek(dates, currentDate, userId);
         setCurrentWeek(fetchedTasks);
@@ -269,6 +273,7 @@ const WeekChart = () => {
                     <AddExperienceModal
                         isOpen={showModal}
                         setShowModal={setShowModal}
+                        userId={grabbedUserId}
                     />
 
                     <div className="flex space-x-1 mt-4">
