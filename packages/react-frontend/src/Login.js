@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 const Login = ({ login, onSwitchToRegister }) => {
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
+  const [validLogin, setValidLogin] = useState(true);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -21,6 +22,7 @@ const Login = ({ login, onSwitchToRegister }) => {
         const data = await response.json();
         login(data.userId);
       } else {
+        setValidLogin(false);
         console.error('Login failed:', response.statusText);
       }
     } catch (error) {
@@ -56,6 +58,9 @@ const Login = ({ login, onSwitchToRegister }) => {
             className="w-full h-12 px-3 border rounded-md"
           />
         </label>
+        {!validLogin && (
+          <p className="text-red-500 mb-4">Invalid login.</p>
+        )}
         <button type="submit" className="w-full h-12 bg-blue-500 text-white rounded-md">
           Login
         </button>
