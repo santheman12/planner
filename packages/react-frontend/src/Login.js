@@ -39,7 +39,7 @@ const Login = ({ login, onSwitchToRegister }) => {
             value={username}
             onChange={(e) => {
               setUserName(e.target.value);
-              console.log('Username changed:', e.target.value);
+              // console.log('Username changed:', e.target.value);
             }}
             className="w-full h-12 px-3 border rounded-md"
           />
@@ -51,7 +51,7 @@ const Login = ({ login, onSwitchToRegister }) => {
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
-              console.log('Password changed:', e.target.value);
+              // console.log('Password changed:', e.target.value);
             }}
             className="w-full h-12 px-3 border rounded-md"
           />

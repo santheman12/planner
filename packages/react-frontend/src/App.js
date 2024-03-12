@@ -11,12 +11,12 @@ function App() {
   const [isLoginMode, setIsLoginMode] = useState(true);
 
   const handleLogin = (userID) => {
-    console.log("logged in with ID:", userID);
+    // console.log("logged in with ID:", userID);
     setAuthenticated(true);
   };
 
   const handleRegister = (userID) => {
-    console.log("registered in with ID:", userID);
+    // console.log("registered in with ID:", userID);
     setAuthenticated(true);
   };
 
