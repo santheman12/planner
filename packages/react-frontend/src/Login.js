@@ -10,7 +10,7 @@ const Login = ({ login, onSwitchToRegister }) => {
   
     // Make a request to the server to authenticate the user
     try {
-      const response = await fetch('http://localhost:8000/login', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

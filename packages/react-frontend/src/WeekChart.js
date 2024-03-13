@@ -62,7 +62,7 @@ const WeekChart = () => {
     };
 
     async function fetchWeekTasks(userId, currentDate) {
-        const url = `http://localhost:8000/tasks/week/false?userid=${userId}&current_date=${formatDate(
+        const url = `${process.env.REACT_APP_API_URL}/tasks/week/false?userid=${userId}&current_date=${formatDate(
             currentDate
         )}`;
         try {
@@ -96,7 +96,7 @@ const WeekChart = () => {
     }
 
     async function fetchDoneTasks(userId, currentDate) {
-        const url = `http://localhost:8000/tasks/week/true?userid=${userId}&current_date=${formatDate(
+        const url = `${process.env.REACT_APP_API_URL}/tasks/week/true?userid=${userId}&current_date=${formatDate(
             currentDate
         )}`;
         try {
@@ -131,7 +131,7 @@ const WeekChart = () => {
     }
 
     async function setTaskCompleteTrue(taskId) {
-        const url = `http://localhost:8000/tasks/true?taskid=${taskId}`;
+        const url = `${process.env.REACT_APP_API_URL}/tasks/true?taskid=${taskId}`;
         try {
             const response = await fetch(url, { method: "PUT" });
             if (!response.ok) {
@@ -146,7 +146,7 @@ const WeekChart = () => {
     }
 
     async function setTaskCompleteFalse(taskId) {
-        const url = `http://localhost:8000/tasks/false?taskid=${taskId}`;
+        const url = `${process.env.REACT_APP_API_URL}/tasks/false?taskid=${taskId}`;
         try {
             const response = await fetch(url, { method: "PUT" });
             if (!response.ok) {

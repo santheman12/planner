@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+
 const AddTask = () => {
   const [task, setTask] = useState({
     userid: '',
@@ -23,7 +24,7 @@ const AddTask = () => {
   
     try {
       // Assuming your backend expects task details in JSON format
-      const response = await fetch(`http://localhost:8000/tasks`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/tasks`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
