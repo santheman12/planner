@@ -7,7 +7,7 @@ https://www.figma.com/proto/q2Lu3bGiKkJOBN18MsGKIo/Planner-Planner?type=design&n
 
 Storyboard: https://www.figma.com/file/q2Lu3bGiKkJOBN18MsGKIo/Planner-Planner?type=design&node-id=16%3A2&mode=design&t=WKxtAWCcJFn7IHOB-1
 
-##UML Diagram
+## UML Diagram
 https://github.com/santheman12/planner/blob/main/CSC%20307%20-%20UML%20Diagram.png
 
 ## Setting up the Dev Environment
